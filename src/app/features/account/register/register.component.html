@@ -1,0 +1,102 @@
+<div class="register-container">
+  <div class="text-center w-100">
+    <h1 class="fw-semibold">Join Blog.</h1>
+  </div>
+
+  <div class="register-form mt-3 mx-5">
+    <form [formGroup]="registerForm" (ngSubmit)="register()">
+      <div class="mb-3">
+        <label for="fullname" class="form-label fw-bold my-0 mx-2"
+          >Full name</label
+        >
+        <input
+          [class.is-invalid]="
+            registerForm.controls['fullname'].touched &&
+            registerForm.controls['fullname'].invalid
+          "
+          formControlName="fullname"
+          type="text"
+          class="form-control rounded-pill"
+          id="fullname"
+        />
+        <div
+          *ngIf="registerForm.controls['fullname'].errors?.['required']"
+          class="invalid-feedback mx-2"
+        >
+          *Name is required.
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label fw-bold my-0 mx-2">Email</label>
+        <input
+          [class.is-invalid]="
+            registerForm.controls['email'].touched &&
+            registerForm.controls['email'].invalid
+          "
+          formControlName="email"
+          type="email"
+          class="form-control rounded-pill"
+          id="email"
+        />
+        <div
+          *ngIf="registerForm.controls['email'].errors?.['required']"
+          class="invalid-feedback mx-2"
+        >
+          *Email is required.
+        </div>
+        <div
+          *ngIf="registerForm.controls['email'].errors?.['pattern'] && registerForm.controls['email'].dirty"
+          class="invalid-feedback mx-2"
+        >
+          *Invalid email.
+        </div>
+      </div>
+      <div class="mb-4">
+        <label for="registerPassword" class="form-label fw-bold my-0 mx-2"
+          >Password</label
+        >
+        <input
+          [class.is-invalid]="
+            registerForm.controls['password'].touched &&
+            registerForm.controls['password'].invalid
+          "
+          formControlName="password"
+          type="password"
+          class="form-control rounded-pill"
+          id="registerPassword"
+        />
+        <div
+          *ngIf="registerForm.controls['password'].errors?.['required']"
+          class="invalid-feedback mx-2"
+        >
+          *Password is required.
+        </div>
+        <div
+          *ngIf="registerForm.controls['password'].errors?.['minlength']"
+          class="invalid-feedback mx-2"
+        >
+          *Password minlength is 8.
+        </div>
+      </div>
+
+      <div *ngIf="validationErrors.length > 0">
+        <ul class="text-danger">
+          <li *ngFor="let error of validationErrors">{{ error.error }}</li>
+        </ul>
+      </div>
+
+      <button
+        class="btn btn-dark fw-bold rounded-pill mb-4 w-100"
+        type="submit"
+      >
+        Sign up
+      </button>
+    </form>
+
+    <div class="mb-4" id="google-btn"></div>
+    <div class="text-center">
+      Already have an account?
+      <a class="login-link fw-bolder" routerLink="/login">Sign in.</a>
+    </div>
+  </div>
+</div>
