@@ -1,0 +1,45 @@
+<nav class="navbar navbar-expand-md border-bottom border-black">
+  <div class="container" style="height: 60px">
+    <a class="navbar-brand" routerLink="/">
+      <h1 style="font-weight: 700; font-size: 300%; cursor: pointer">Blog</h1>
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarCollapse"
+      aria-controls="navbarCollapse"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div
+      class="collapse navbar-collapse justify-content-end"
+      id="navbarCollapse"
+    >
+      <ul class="navbar-nav me-0 mb-2 mb-md-0">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/about" routerLinkActive="active"
+            >Our story</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/login" routerLinkActive="active"
+            >Write</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/login" routerLinkActive="active"
+            >Sign in</a
+          >
+        </li>
+        <li class="nav-item">
+          <button routerLink="/register" class="btn btn-dark rounded-pill">
+            Get started
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
