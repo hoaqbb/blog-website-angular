@@ -18,6 +18,35 @@
       class="collapse navbar-collapse justify-content-end"
       id="navbarCollapse"
     >
+      @if(accountService.currentUser()) {
+      <ul class="navbar-nav me-0 mb-2 mb-md-0 align-items-center">
+        <li class="nav-item">
+          <a class="nav-link fs-5" routerLink="/blog" routerLinkActive="active">
+            <i class="pi pi-pen-to-square" style="font-size: 1.3rem"></i>
+            Write</a
+          >
+        </li>
+        <li class="nav-item mx-3">
+          <a class="nav-link" routerLinkActive="active">
+            <i
+              class="pi pi-bell"
+              style="font-size: 1.3rem"
+              routerLinkActive="active"
+            ></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          @if(accountService.currentUser()?.avatar) {
+          <p-avatar
+            image="{{ accountService.currentUser()?.avatar }}"
+            shape="circle"
+          />
+          } @else {
+          <p-avatar icon="pi pi-user" shape="circle" />
+          }
+        </li>
+      </ul>
+      } @else {
       <ul class="navbar-nav me-0 mb-2 mb-md-0">
         <li class="nav-item">
           <a class="nav-link" routerLink="/about" routerLinkActive="active"
@@ -40,6 +69,7 @@
           </button>
         </li>
       </ul>
+      }
     </div>
   </div>
 </nav>

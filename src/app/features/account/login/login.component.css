@@ -1,0 +1,9 @@
+.login-container {
+  margin: 6% 30%;
+  height: 55vh;
+}
+
+.register-link {
+  text-decoration: none;
+  color: black;
+}

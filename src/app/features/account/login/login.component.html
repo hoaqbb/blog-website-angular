@@ -1,0 +1,74 @@
+<div class="login-container">
+  <div class="text-center w-100">
+    <h1 class="fw-semibold">Welcome back.</h1>
+  </div>
+  <div class="login-form mt-3 mx-5">
+    <form #loginForm="ngForm" (ngSubmit)="login()">
+      <div class="mb-3">
+        <label for="loginEmail" class="form-label fw-bold my-0 mx-2"
+          >Email</label
+        >
+        <input
+          [(ngModel)]="model.email"
+          #email="ngModel"
+          name="email"
+          [class.is-invalid]="email.touched && email.invalid"
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
+          type="email"
+          class="form-control rounded-pill"
+          id="loginEmail"
+          required
+        />
+        <div *ngIf="email.errors?.required" class="invalid-feedback mx-2">
+          *Vui lòng nhập email
+        </div>
+        <div
+          *ngIf="email.errors?.pattern && email.dirty"
+          class="invalid-feedback mx-2"
+        >
+          *Vui lòng nhập email hợp lệ
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="loginPassword" class="form-label fw-bold my-0 mx-2"
+          >Password</label
+        >
+        <input
+          [class.is-invalid]="password.touched && password.invalid"
+          [(ngModel)]="model.password"
+          name="password"
+          type="password"
+          class="form-control rounded-pill"
+          id="loginPassword"
+          #password="ngModel"
+          required
+        />
+        <div *ngIf="password.errors?.required" class="invalid-feedback">
+          *Vui lòng nhập mật khẩu
+        </div>
+      </div>
+      <div *ngIf="validationErrors.length > 0">
+        <ul class="text-danger">
+          <li *ngFor="let error of validationErrors">{{ error.error }}</li>
+        </ul>
+      </div>
+
+      <button
+        class="btn btn-dark fw-bold rounded-pill mb-4 w-100"
+        type="submit"
+        [disabled]="loginForm.invalid"
+      >
+        Sign in
+      </button>
+    </form>
+
+    <div class="mb-4" id="google-btn"></div>
+    <div class="text-center">
+      No account?
+      <a class="register-link fw-bolder" routerLink="/register">
+        Create one.
+      </a>
+    </div>
+  </div>
+</div>
