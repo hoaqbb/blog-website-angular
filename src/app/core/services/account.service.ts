@@ -14,30 +14,42 @@ export class AccountService {
   constructor(private http: HttpClient) { }
 
   login(model: any) {
-    return this.http.post<User>(this.baseUrl + "/api/Account/login", model, { withCredentials: true }).pipe(
-      tap((res: User) => {
-        this.currentUser.set(res);
-        localStorage.setItem('user', JSON.stringify(res));
-      })
+    return this.http.post<User>(this.baseUrl + "/api/Account/login", model).pipe(
+      tap((res: User) => this.setCurrentUserSource(res))
     );
   }
 
   register(model: any) {
-    return this.http.post<User>(this.baseUrl + "/api/Account/register", model, { withCredentials: true }).pipe(
-      tap((res: User) => {
-        this.currentUser.set(res);
-        localStorage.setItem('user', JSON.stringify(res));
-      })
+    return this.http.post<User>(this.baseUrl + "/api/Account/register", model).pipe(
+      tap((res: User) => this.setCurrentUserSource(res))
     );
   }
 
   signInWithGoogle(token: string) {
-    return this.http.post<User>(this.baseUrl + "/api/Account/login-with-google", {token: token}, { withCredentials: true }).pipe(
-      tap((res: User) => {
-        this.currentUser.set(res);
-        localStorage.setItem('user', JSON.stringify(res));
-      })
+    return this.http.post<User>(this.baseUrl + "/api/Account/login-with-google", {token: token}).pipe(
+      tap((res: User) => this.setCurrentUserSource(res))
     );
   }
+
+  logout() {
+    return this.http.post(this.baseUrl + "/api/Token/revoke", {}).pipe(
+      tap(() => {
+        this.removeCurrentUserSource();
+      }
+    ));
+  }
   
+  refreshToken() {
+    return this.http.post(this.baseUrl + "/api/Token/refresh-token", {})
+  }
+
+  setCurrentUserSource(user: User) {
+    this.currentUser.set(user);
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  removeCurrentUserSource() {
+    this.currentUser.set(null);
+    localStorage.removeItem('user');
+  }
 }

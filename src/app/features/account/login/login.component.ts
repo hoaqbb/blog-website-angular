@@ -4,7 +4,7 @@ import { AccountService } from '../../../core/services/account.service';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 declare var google: any;
 
 @Component({
@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
   model: any = {};
   validationErrors: string[] = [];
 
-  constructor(private acountService: AccountService) { }
+  constructor(private acountService: AccountService, private router: Router) { }
 
   ngOnInit(): void {
     this.initializeGoogleBtn();
@@ -30,6 +30,7 @@ export class LoginComponent implements OnInit {
       {
         next: response => {
           console.log(response);
+          this.router.navigateByUrl('/');
         },
         error: (error) => {
           console.log(error);
@@ -44,7 +45,17 @@ export class LoginComponent implements OnInit {
     google.accounts.id.initialize({
       client_id: this.googleClientId,
       callback: (res: any) => {
-        this.acountService.signInWithGoogle(res.credential).subscribe();
+        this.acountService.signInWithGoogle(res.credential).subscribe(
+          {
+            next: response => {
+              this.router.navigateByUrl('/');
+            },
+            error: (error) => {
+              console.log(error);
+              this.validationErrors.push(error);
+            }
+          }
+        );
       }
     });
 

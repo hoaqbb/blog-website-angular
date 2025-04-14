@@ -20,13 +20,13 @@
           required
         />
         <div *ngIf="email.errors?.required" class="invalid-feedback mx-2">
-          *Vui lòng nhập email
+          *Email is required.
         </div>
         <div
           *ngIf="email.errors?.pattern && email.dirty"
           class="invalid-feedback mx-2"
         >
-          *Vui lòng nhập email hợp lệ
+          *Invalid email.
         </div>
       </div>
 
@@ -45,7 +45,7 @@
           required
         />
         <div *ngIf="password.errors?.required" class="invalid-feedback">
-          *Vui lòng nhập mật khẩu
+          *Password is required.
         </div>
       </div>
       <div *ngIf="validationErrors.length > 0">
