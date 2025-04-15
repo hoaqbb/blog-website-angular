@@ -1,0 +1,93 @@
+@if(accountService.currentUser()) {
+<div class="container">
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="post-thumnail">
+        <h4>Thumbnail preview</h4>
+        @if(selectedImage) {
+        <img
+          [src]="selectedImage"
+          class="preview-image-placeholder rounded mb-3"
+        />
+        } @else {
+        <div
+          class="placeholder-thumbnail rounded d-flex justify-content-center align-items-center mb-3"
+        >
+          <span class="text-muted">No thumbnail selected</span>
+        </div>
+        }
+      </div>
+
+      @if(imageFiles.length > 0) {
+      <div class="d-flex flex-wrap gap-2">
+        @for(file of imageFiles; track file.name) {
+        <div
+          class="thumbnail-option position-relative cursor-pointer"
+          [class.selected]="selectedIndex === $index"
+          (click)="selectThumbnail(file, $index)"
+        >
+          <img
+            [src]="getBlobUrl(file)"
+            class="img-thumbnail"
+            [alt]="file.name"
+          />
+        </div>
+        }
+      </div>
+      }
+
+      <h4 class="fw-bold border-bottom border-secondary-subtle">
+        {{ data.title }}
+      </h4>
+      @if(data.shortDescription) {
+      <p class="border-bottom border-secondary-subtle">
+        {{ data.shortDescription }}
+      </p>
+      }
+      <p>
+        Note: Changes here will affect how your story appears in public places
+        like Blog’s homepage and in subscribers’ inboxes — not the contents of
+        the story itself.
+      </p>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="d-flex gap-2">
+        <h4>Publish to:</h4>
+        <h4 class="fw-bold">{{ accountService.currentUser().fullName }}</h4>
+      </div>
+
+      <form #publishForm="ngForm" (ngSubmit)="handleSubmit()">
+        <div class="d-flex flex-column gap-2 mb-3">
+          <label for="categoryId">Select category</label>
+          <select
+            style="width: 30%"
+            name="categoryId"
+            [value]="1"
+            [(ngModel)]="model.categoryId"
+          >
+            @for (category of postService.categories(); track $index) {
+            <option [value]="category.id">
+              {{ category.name }}
+            </option>
+            }
+          </select>
+        </div>
+
+        <div class="d-flex flex-column gap-2 mb-3">
+          <label for="status">Status</label>
+          <select style="width: 30%" name="status" [(ngModel)]="model.status">
+            <option value="1">Public</option>
+            <option value="2">Archive</option>
+          </select>
+        </div>
+
+        <p>Learn more about what happens to your post when you publish.</p>
+        <button class="btn btn-success rounded-pill" type="submit">
+          Publish now
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+}

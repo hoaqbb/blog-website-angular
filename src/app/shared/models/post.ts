@@ -17,3 +17,24 @@ import { Comment } from "./comment"
     isLikedByCurrentUser: boolean
     postComments: Comment[]
   }
+
+  export interface CreatePost {
+    title: string
+    shortDescription: string
+    content: string
+    categoryId: number
+    status: PostStatus
+    PostImages: PostImage[]
+  }
+
+  export interface PostImage {
+    publicId: string
+    imageUrl: string
+    isThumbnail: boolean
+  }
+
+  export enum PostStatus {
+    Ban = 0,
+    Public = 1,
+    Archive = 2
+  }
