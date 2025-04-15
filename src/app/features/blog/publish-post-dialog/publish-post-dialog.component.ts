@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AccountService } from '../../../core/services/account.service';
 import { FormsModule } from '@angular/forms';
 import { PostService } from '../../../core/services/post.service';
@@ -24,6 +24,7 @@ export class PublishPostDialogComponent implements OnInit, OnDestroy {
     public accountService: AccountService,
     public postService: PostService,
     public config: DynamicDialogConfig,
+    private ref: DynamicDialogRef,
     private router: Router,
     private toastr: ToastrService
   ) {
@@ -43,7 +44,7 @@ export class PublishPostDialogComponent implements OnInit, OnDestroy {
     this.data.content = this.extractImageAndProcessHtml(this.data.content);
 
     // Generate all URLs once during initialization
-    getFileBlobUrls(this.imageFiles);
+    this.fileBlobUrls = getFileBlobUrls(this.imageFiles);
 
     // Select first image as default if available
     if (this.imageFiles.length > 0) {
@@ -59,7 +60,6 @@ export class PublishPostDialogComponent implements OnInit, OnDestroy {
   async handleSubmit() {
     try {
       await this.uploadImages(this.imageFiles);
-      console.log(this.postImages);
 
       const processedContent = this.processImagesInContent(
         this.data.content,
@@ -67,8 +67,6 @@ export class PublishPostDialogComponent implements OnInit, OnDestroy {
       );
 
       this.data.content = processedContent;
-      // console.log(this.data.content);
-      console.log(this.data);
 
       this.uploadPost();
     } catch (error) {
@@ -88,11 +86,12 @@ export class PublishPostDialogComponent implements OnInit, OnDestroy {
 
     this.postService.createPost(newPost).subscribe({
       next: (res: any) => {
-        console.log('✅ Post created successfully:', res);
-        this.router.navigateByUrl("blog/" + res.slug)
+        this.toastr.success("Create Post successfully!")
+        this.ref.destroy();
+        this.router.navigateByUrl("blog/" + res.slug);
       },
       error: (error) => {
-        console.error('❌ Error creating post:', error);
+        this.toastr.success("Error creating post!")
       },
     });
   }

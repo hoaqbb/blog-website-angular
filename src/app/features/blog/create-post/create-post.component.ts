@@ -55,7 +55,6 @@ export class CreatePostComponent implements OnInit {
         content: this.postForm.controls['content'].value,
       };
     });
-    console.log(this.postService.newPost());
   }
 
   //kiem tra xem form co bi thay doi ko
@@ -70,8 +69,6 @@ export class CreatePostComponent implements OnInit {
         shortDescription: this.postForm.controls['shortDescription'].value,
       };
     });
-    console.log(this.postService.newPost());
-    
   }
 
   ngOnInit(): void {

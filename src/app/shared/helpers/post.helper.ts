@@ -21,7 +21,9 @@ export function base64ToFile(dataUrl: string, filename: string): File {
 
 // Create blob URLs for all image files
 export function getFileBlobUrls(imageFiles: File[]) {
+  let fileBlobUrls: { [key: string]: string } = {};
   imageFiles.forEach((file) => {
-    this.fileBlobUrls[file.name] = URL.createObjectURL(file);
+    fileBlobUrls[file.name] = URL.createObjectURL(file);
   });
+  return fileBlobUrls;
 }
