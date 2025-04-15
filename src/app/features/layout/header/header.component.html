@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-md border-bottom border-black">
   <div class="container" style="height: 60px">
-    <a class="navbar-brand" routerLink="/">
+    <a class="navbar-brand cursor-pointer" routerLink="/">
       <h1 style="font-weight: 700; font-size: 300%; cursor: pointer">Blog</h1>
     </a>
     <button
@@ -20,12 +20,28 @@
     >
       @if(accountService.currentUser()) {
       <ul class="navbar-nav me-0 mb-2 mb-md-0 align-items-center">
+        @if(isBloging()) {
         <li class="nav-item">
-          <a class="nav-link fs-5" routerLink="/blog" routerLinkActive="active">
+          <button
+            class="btn btn-success rounded-pill px-3 py-1"
+            (click)="showPublishDialog()"
+            [disabled]="!postService.isNewPostValid()"
+          >
+            Publish
+          </button>
+        </li>
+        } @else {
+        <li class="nav-item">
+          <a
+            class="nav-link fs-5"
+            routerLink="/write-blog"
+            routerLinkActive="active"
+          >
             <i class="pi pi-pen-to-square" style="font-size: 1.3rem"></i>
             Write</a
           >
         </li>
+        }
         <li class="nav-item mx-3">
           <a class="nav-link" routerLinkActive="active">
             <i
@@ -36,14 +52,33 @@
           </a>
         </li>
         <li class="nav-item">
-          @if(accountService.currentUser()?.avatar) {
-          <p-avatar
-            image="{{ accountService.currentUser()?.avatar }}"
-            shape="circle"
-          />
-          } @else {
-          <p-avatar icon="pi pi-user" shape="circle" />
-          }
+          <div class="dropdown">
+            <div
+              class="cursor-pointer"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              @if(accountService.currentUser()?.avatar) {
+              <p-avatar
+                image="{{ accountService.currentUser()?.avatar }}"
+                shape="circle"
+              />
+              } @else {
+              <p-avatar icon="pi pi-user" shape="circle" />
+              }
+            </div>
+            <ul class="dropdown-menu dropdown-menu-lg-end">
+              <li><a class="dropdown-item" routerLink="/">Profile</a></li>
+              <li><a class="dropdown-item" routerLink="/">Another action</a></li>
+              <li><a class="dropdown-item" routerLink="/">Something else here</a></li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a class="dropdown-item" (click)="logout()" routerLink="/login"
+                  >Sign out</a
+                >
+              </li>
+            </ul>
+          </div>
         </li>
       </ul>
       } @else {

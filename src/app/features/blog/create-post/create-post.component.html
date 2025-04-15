@@ -1,0 +1,46 @@
+<div class="" style="margin: 0 20%">
+  <form [formGroup]="postForm" (change)="onFormChanged($event)">
+    <div class="my-3">
+      <input
+        [class.is-invalid]="postForm.controls['title'].touched"
+        type="text"
+        formControlName="title"
+        placeholder="Title"
+        class="form-control fs-2 fw-bold"
+      />
+      <div
+        *ngIf="postForm.controls['title'].errors?.['required']"
+        class="invalid-feedback mx-2"
+      >
+        *Title is required.
+      </div>
+    </div>
+
+    <input
+      type="text"
+      formControlName="shortDescription"
+      placeholder="Short Description"
+      class="form-control mb-3"
+    />
+    <div class="my-3">
+      <div
+        *ngIf="
+          postForm.get('content')?.touched &&
+          postForm.get('content')?.hasError('required')
+        "
+        class="text-danger mx-2"
+      >
+        *Content is required.
+      </div>
+      <quill-editor
+        *ngIf="quillModules"
+        [modules]="quillModules"
+        formControlName="content"
+        [styles]="{ height: '100vh' }"
+        [required]="true"
+        (onContentChanged)="onEditorChanged($event)"
+        theme="snow"
+      ></quill-editor>
+    </div>
+  </form>
+</div>
