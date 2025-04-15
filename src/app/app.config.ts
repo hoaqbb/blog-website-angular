@@ -11,6 +11,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),
     provideAnimationsAsync(),
-    // importProvidersFrom(CookieService)
+    provideToastr({timeOut: 2000, positionClass: 'toast-bottom-right'}),
   ]
 };
