@@ -7,6 +7,8 @@ import { replaceNbspWithSpace } from '../../../shared/helpers/post.helper';
 import { ActivatedRoute } from '@angular/router';
 import { AvatarModule } from 'primeng/avatar';
 import { PostDetails } from '../../../shared/models/post';
+import { LikeService } from '../../../core/services/like.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-post-details',
@@ -17,11 +19,13 @@ import { PostDetails } from '../../../shared/models/post';
   styleUrl: './post-details.component.css',
 })
 export class PostDetailsComponent implements OnInit {
-  post: PostDetails;;
+  post: PostDetails;
   slug: string | null = null;
 
   constructor(
     private postService: PostService,
+    private likeService: LikeService,
+    private toastr: ToastrService,
     private route: ActivatedRoute
   ) {}
 
@@ -32,6 +36,30 @@ export class PostDetailsComponent implements OnInit {
         this.post = res;
         this.post.content = replaceNbspWithSpace(this.post.content);
       });
+    });
+  }
+
+  likePost(postId) {
+    this.likeService.likePost(postId).subscribe({
+      next: () => {
+        this.post.isLikedByCurrentUser = true;
+        this.post.likeCount++;
+      },
+      error: (error) => {
+        this.toastr.error(error.error);
+      },
+    });
+  }
+
+  unlikePost(postId) {
+    this.likeService.unlikePost(postId).subscribe({
+      next: () => {
+        this.post.isLikedByCurrentUser = false;
+        this.post.likeCount--;
+      },
+      error: (error) => {
+        this.toastr.error(error.error);
+      },
     });
   }
 }

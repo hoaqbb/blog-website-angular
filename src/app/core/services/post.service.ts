@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment.development';
 import { CreatePost } from '../../shared/models/post';
 import { Category } from '../../shared/models/category';
 import { PostParams } from '../../shared/models/postParams';
+import { tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

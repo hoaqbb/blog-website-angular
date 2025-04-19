@@ -14,13 +14,23 @@
         <h2 class="card-title">{{ post.title }}</h2>
         <p class="card-text text-muted">{{ post.shortDescription }}</p>
         <div class="post-action d-flex gap-2">
-          <div class="text-muted">{{ post.createAt | date : "mediumDate" }}</div>
+          <div class="text-muted">
+            {{ post.createAt | date : "mediumDate" }}
+          </div>
           @if (post.isLikedByCurrentUser) {
           <button class="btn btn-link text-muted p-0 me-3">
-              <i class="pi pi-heart-fill" style="color: #ff3040;">{{post.likeCount}}</i>
+            <i
+              class="pi pi-heart-fill"
+              style="color: #ff3040"
+              (click)="unlikePost(post.id); $event.stopPropagation()"
+              >{{ post.likeCount }}</i
+            >
           </button>
           } @else {
-          <button class="btn btn-link text-muted p-0 me-3">
+          <button
+            class="btn btn-link text-muted p-0 me-3"
+            (click)="likePost(post.id); $event.stopPropagation()"
+          >
             <i class="pi pi-heart">{{ post.likeCount }}</i>
           </button>
           }
