@@ -5,7 +5,6 @@ import { FooterComponent } from "./features/layout/footer/footer.component";
 import { AccountService } from './core/services/account.service';
 import { User } from './shared/models/user';
 import { PostService } from './core/services/post.service';
-
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -17,7 +16,7 @@ export class AppComponent {
 
   constructor(private accountService: AccountService, private postService: PostService) { }
   
-  ngOnInit(): void {
+  ngOnInit() {
     this.setCurrentUser();
   }
 
@@ -32,10 +31,7 @@ export class AppComponent {
 
   getCategories() {
     this.postService.getAllCategory().subscribe({
-      next: (data: any) => {
-        this.postService.categories.set(data);
-        console.log(this.postService.categories());
-        
+      next: () => {
       },
       error: (error) => console.error(error)
     })

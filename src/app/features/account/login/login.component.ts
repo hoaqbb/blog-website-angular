@@ -5,6 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { PostService } from '../../../core/services/post.service';
 declare var google: any;
 
 @Component({
@@ -19,7 +20,7 @@ export class LoginComponent implements OnInit {
   model: any = {};
   validationErrors: string[] = [];
 
-  constructor(private acountService: AccountService, private router: Router) { }
+  constructor(private acountService: AccountService, private postService: PostService, private router: Router) { }
 
   ngOnInit(): void {
     this.initializeGoogleBtn();
@@ -28,8 +29,8 @@ export class LoginComponent implements OnInit {
   login() {
     this.acountService.login(this.model).subscribe(
       {
-        next: response => {
-          console.log(response);
+        next: () => {
+          this.postService.getAllCategory().subscribe();
           this.router.navigateByUrl('/');
         },
         error: (error) => {

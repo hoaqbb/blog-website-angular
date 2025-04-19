@@ -26,6 +26,14 @@ export class PostService {
     return true;
   }
 
+  getPostsByCategory(postParams: PostParams) {
+    let params = new HttpParams();
+    params = params.append('category', postParams.category);
+    params = params.append('pageIndex', postParams.pageIndex);
+
+    return this.http.get(this.baseUrl + '/api/Posts/category', { params });
+  }
+
   getPostBySlug(slug: string) {
     return this.http.get(this.baseUrl + '/api/Posts/' + slug)
   }
@@ -35,7 +43,12 @@ export class PostService {
   }
 
   getAllCategory() {
-    return this.http.get(this.baseUrl + '/api/Categories')
+    return this.http.get<Category[]>(this.baseUrl + '/api/Categories')
+    .pipe(
+      tap((cats: Category[]) => {
+        this.categories.set(cats);
+      })
+    )
   }
 
   // use fetch to ignore the interceptor

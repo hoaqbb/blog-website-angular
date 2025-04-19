@@ -1,0 +1,59 @@
+@if(accountService.currentUser() == null) {
+<!-- Hiện layout khi chưa đăng nhập -->
+<div class="container-fluid d-flex justify-content-between">
+  <div class="container m-5">
+    <h1 style="font-size: 800%">Human <br />stories & ideas</h1>
+    <p style="font-size: xx-large">
+      A place to read, write and deepen your understanding
+    </p>
+    <button
+      class="btn btn-dark cursor-pointer fs-4 fw-bold rounded-pill px-5"
+      routerLink="/login"
+    >
+      Start reading
+    </button>
+  </div>
+  <div>
+    <img
+      src="https://miro.medium.com/v2/format:webp/4*SdjkdS98aKH76I8eD0_qjw.png"
+      alt=""
+      style="width: 460px; height: 600px"
+    />
+  </div>
+</div>
+} @else {
+<div class="d-flex m-5 home">
+  <div class="d-flex flex-column col-8">
+    <!-- Category bar -->
+    @if(categoryListForSelection) {
+    <div class="category-bar d-flex">
+      @for (category of categoryListForSelection; track $index) {
+      <!-- add class is-selected if category property isSelected = true -->
+      <div
+        class="border-bottom cursor-pointer px-4 py-3"
+        [class.is-selected]="categoryListForSelection[$index].isSelected"
+        (click)="selectCategory($index)"
+      >
+        {{ category.name }}
+      </div>
+      }
+    </div>
+    }
+
+    <!-- Scrollable area -->
+    @if(posts){
+    <div
+      #scrollContainer
+      class="post-items"
+      style="overflow-y: auto; max-height: 80vh"
+    >
+      @for (post of posts; track $index) {
+      <app-post-item [post]="post"></app-post-item>
+      }
+    </div>
+    }
+  </div>
+
+  <div class="col-4" style="background-color: red; height: 100px"></div>
+</div>
+}

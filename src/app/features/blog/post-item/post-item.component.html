@@ -1,0 +1,48 @@
+@if(post) {
+<div routerLink="/blog/{{ post.slug }}" class="border-top border-bottom p-3">
+  <div class="card-body">
+    <div class="author">
+      <img
+        style="height: 3%; width: 3%"
+        [src]="post.author.avatar"
+        class="rounded-circle"
+      />
+      <a class="author-name mx-1">{{ post.author.fullname }}</a>
+    </div>
+    <div class="d-flex" style="width: 100%; justify-content: space-between">
+      <div class="col-9">
+        <h2 class="card-title">{{ post.title }}</h2>
+        <p class="card-text text-muted">{{ post.shortDescription }}</p>
+        <div class="post-action d-flex gap-2">
+          <div class="text-muted">{{ post.createAt | date : "mediumDate" }}</div>
+          @if (post.isLikedByCurrentUser) {
+          <button class="btn btn-link text-muted p-0 me-3">
+              <i class="pi pi-heart-fill" style="color: #ff3040;">{{post.likeCount}}</i>
+          </button>
+          } @else {
+          <button class="btn btn-link text-muted p-0 me-3">
+            <i class="pi pi-heart">{{ post.likeCount }}</i>
+          </button>
+          }
+
+          <button class="btn btn-link text-muted p-0 me-3">
+            <i class="pi pi-comments">{{ post.commentCount }}</i>
+          </button>
+        </div>
+      </div>
+
+      @if(post.thumbnail) {
+      <div class="col-3">
+        <img
+          [src]="post.thumbnail"
+          style="width: 200px; height: 150px; object-fit: cover"
+          class="img-fluid rounded"
+          alt="Article image"
+        />
+      </div>
+      }
+    </div>
+  </div>
+</div>
+
+}

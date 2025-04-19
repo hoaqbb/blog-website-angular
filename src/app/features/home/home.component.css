@@ -1,0 +1,18 @@
+:host ::ng-deep span .p-tag-value{
+    font-size: x-large;
+    margin: auto 20px;
+}
+
+.post-items {
+    overflow: scroll;
+}
+
+.category-bar {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+}
+
+.is-selected {
+    border-bottom: 2px solid #000 !important;
+}

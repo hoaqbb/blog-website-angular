@@ -1,6 +1,20 @@
 import { Author } from "./user"
 import { Comment } from "./comment"
 
+export interface PostList {
+    id: string
+    title: string
+    shortDescription: string
+    slug: string
+    view: number
+    createAt: string
+    thumbnail: string
+    author: Author
+    likeCount: number
+    commentCount: number
+    isLikedByCurrentUser: boolean
+  }
+
   export interface PostDetails {
     id: string
     title: string
