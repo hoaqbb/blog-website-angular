@@ -105,12 +105,23 @@
           <div class="d-flex align-items-center mb-2 gap-2">
             <!-- comment like -->
             <div class="d-flex align-items-center gap-1">
-              <button
-                class="btn btn-sm btn-link text-decoration-none text-muted p-0 d-flex justify-content-center align-items-center"
-              >
+              @if (comment.isLikedByCurrentUser) {
+                <button
+                  (click)="unlikeComment(comment.id); $event.stopPropagation()"
+                  class="btn btn-sm btn-link text-decoration-none text-muted p-0 d-flex justify-content-center align-items-center"
+                >
                 <i class="pi pi-heart-fill" style="color: #ff3040"></i>
-              </button>
-              {{ post.likeCount }}
+                </button>
+              {{ comment.likeCount }}
+                } @else {
+                <button
+                  (click)="likeComment(comment.id); $event.stopPropagation()"
+                  class="btn btn-sm btn-link text-decoration-none text-muted p-0 d-flex justify-content-center align-items-center"
+                >
+                <i class="pi pi-heart"></i>
+                </button>
+              {{ comment.likeCount }}
+                }
             </div>
 
             <!-- reply comments -->

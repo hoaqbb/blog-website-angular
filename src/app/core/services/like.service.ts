@@ -17,4 +17,12 @@ export class LikeService {
   unlikePost(postId) {
     return this.http.delete(this.baseUrl + '/api/Likes/post/' + postId, {});
   }
+
+  likeComment(commentId) {
+    return this.http.post(this.baseUrl + '/api/Likes/comment/' + commentId, {});
+  }
+
+  unlikeComment(commentId) {
+    return this.http.delete(this.baseUrl + '/api/Likes/comment/' + commentId, {});
+  }
 }

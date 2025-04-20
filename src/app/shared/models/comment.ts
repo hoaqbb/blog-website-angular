@@ -6,4 +6,6 @@ export interface Comment {
   createAt: string
   author: Author
   replyCommentCount: number
+  likeCount: number
+  isLikedByCurrentUser: boolean
 }

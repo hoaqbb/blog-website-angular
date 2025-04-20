@@ -62,4 +62,32 @@ export class PostDetailsComponent implements OnInit {
       },
     });
   }
+
+  likeComment(commentId) {
+    this.likeService.likeComment(commentId).subscribe({
+      next: () => {
+        // Update comment like count and isLikedByCurrentUser
+        let comment = this.post.postComments.find(x => x.id == commentId);
+        comment.isLikedByCurrentUser = true;
+        comment.likeCount++;
+      },
+      error: (error) => {
+        this.toastr.error(error.error);
+      },
+    });
+  }
+
+  unlikeComment(commentId) {
+    this.likeService.unlikeComment(commentId).subscribe({
+      next: () => {
+        // Update comment like count and isLikedByCurrentUser
+        let comment = this.post.postComments.find(x => x.id == commentId);
+        comment.isLikedByCurrentUser = false;
+        comment.likeCount--;
+      },
+      error: (error) => {
+        this.toastr.error(error.error);
+      },
+    });
+  }
 }
