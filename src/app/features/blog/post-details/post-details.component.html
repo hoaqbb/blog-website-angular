@@ -91,11 +91,12 @@
               <span class="fw-bold">{{ accountService.currentUser().fullName }}</span>
           </div>
 
+          <!-- use ngModel directive instead of model -->
           <form class="d-flex flex-column" 
-            (ngSubmit)="addComment(post.id, model.content)" 
+            (ngSubmit)="addComment(post.id, commentForm)" 
             #commentForm="ngForm">
               <textarea
-                [(ngModel)]="model.content"
+                ngModel
                 name="content" 
                 id="create-comment" 
                 pInputTextarea 

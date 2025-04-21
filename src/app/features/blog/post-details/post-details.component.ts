@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { QuillViewHTMLComponent } from 'ngx-quill';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { PostService } from '../../../core/services/post.service';
 import { replaceNbspWithSpace } from '../../../shared/helpers/post.helper';
 import { ActivatedRoute } from '@angular/router';
@@ -16,14 +16,19 @@ import { AccountService } from '../../../core/services/account.service';
   selector: 'app-post-details',
   standalone: true,
   encapsulation: ViewEncapsulation.None,
-  imports: [CommonModule, FormsModule, QuillViewHTMLComponent, AvatarModule, InputTextareaModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    QuillViewHTMLComponent,
+    AvatarModule,
+    InputTextareaModule,
+  ],
   templateUrl: './post-details.component.html',
   styleUrl: './post-details.component.css',
 })
 export class PostDetailsComponent implements OnInit {
   post: PostDetails;
   slug: string | null = null;
-  model: any = {}
 
   constructor(
     private postService: PostService,
@@ -36,7 +41,9 @@ export class PostDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       this.slug = params.get('slug');
-      this.postService.getPostBySlug(this.slug).subscribe((res: PostDetails) => {
+      this.postService
+        .getPostBySlug(this.slug)
+        .subscribe((res: PostDetails) => {
         this.post = res;
         this.post.content = replaceNbspWithSpace(this.post.content);
       });
@@ -71,7 +78,7 @@ export class PostDetailsComponent implements OnInit {
     this.likeService.likeComment(commentId).subscribe({
       next: () => {
         // Update comment like count and isLikedByCurrentUser
-        let comment = this.post.postComments.find(x => x.id == commentId);
+        let comment = this.post.postComments.find((x) => x.id == commentId);
         comment.isLikedByCurrentUser = true;
         comment.likeCount++;
       },
@@ -85,7 +92,7 @@ export class PostDetailsComponent implements OnInit {
     this.likeService.unlikeComment(commentId).subscribe({
       next: () => {
         // Update comment like count and isLikedByCurrentUser
-        let comment = this.post.postComments.find(x => x.id == commentId);
+        let comment = this.post.postComments.find((x) => x.id == commentId);
         comment.isLikedByCurrentUser = false;
         comment.likeCount--;
       },
@@ -95,23 +102,21 @@ export class PostDetailsComponent implements OnInit {
     });
   }
 
-  addComment(postId: string, content: string) {
-    if(!content) return;
+  addComment(postId: string, myForm: NgForm) {
+    let content = myForm.value.content;
+    if (!content) return;
 
     this.postService.commentPost(postId, content).subscribe({
       next: (res: any) => {
         this.post.postComments.unshift(res);
         this.post.commentCount++;
-        this.model.content = '';
-      }, error: (err) => {
-        err.errors.forEach(err => {
-          console.log("ok");
-          
+        myForm.reset();
+      },
+      error: (err) => {
+        err.errors.forEach((err) => {
           this.toastr.error(err);
         });
-        
-        }
+        },
     });
-  
-  }
+    }
 }
