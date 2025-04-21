@@ -70,4 +70,8 @@ export class PostService {
     const data = await response.json();
     return data;
   }
+
+  commentPost(postId, content) {
+    return this.http.post(this.baseUrl + '/api/Comments', { postId: postId, content: content });
+  }
 }

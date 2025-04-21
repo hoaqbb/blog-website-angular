@@ -9,22 +9,26 @@ import { AvatarModule } from 'primeng/avatar';
 import { PostDetails } from '../../../shared/models/post';
 import { LikeService } from '../../../core/services/like.service';
 import { ToastrService } from 'ngx-toastr';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { AccountService } from '../../../core/services/account.service';
 
 @Component({
   selector: 'app-post-details',
   standalone: true,
   encapsulation: ViewEncapsulation.None,
-  imports: [CommonModule, FormsModule, QuillViewHTMLComponent, AvatarModule],
+  imports: [CommonModule, FormsModule, QuillViewHTMLComponent, AvatarModule, InputTextareaModule],
   templateUrl: './post-details.component.html',
   styleUrl: './post-details.component.css',
 })
 export class PostDetailsComponent implements OnInit {
   post: PostDetails;
   slug: string | null = null;
+  model: any = {}
 
   constructor(
     private postService: PostService,
     private likeService: LikeService,
+    public accountService: AccountService,
     private toastr: ToastrService,
     private route: ActivatedRoute
   ) {}
@@ -89,5 +93,25 @@ export class PostDetailsComponent implements OnInit {
         this.toastr.error(error.error);
       },
     });
+  }
+
+  addComment(postId: string, content: string) {
+    if(!content) return;
+
+    this.postService.commentPost(postId, content).subscribe({
+      next: (res: any) => {
+        this.post.postComments.unshift(res);
+        this.post.commentCount++;
+        this.model.content = '';
+      }, error: (err) => {
+        err.errors.forEach(err => {
+          console.log("ok");
+          
+          this.toastr.error(err);
+        });
+        
+        }
+    });
+  
   }
 }
