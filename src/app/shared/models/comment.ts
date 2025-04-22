@@ -8,4 +8,5 @@ export interface Comment {
   replyCommentCount: number
   likeCount: number
   isLikedByCurrentUser: boolean
+  replyComments: Comment[]
 }

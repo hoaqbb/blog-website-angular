@@ -37,15 +37,15 @@
             {{ post.likeCount }}
           </div>
           } @else {
-            <div class="d-flex align-items-center gap-1">
-              <button
+          <div class="d-flex align-items-center gap-1">
+            <button
               (click)="likePost(post.id); $event.stopPropagation()"
-                class="btn btn-sm btn-link text-decoration-none text-muted p-0 d-flex justify-content-center align-items-center"
-              >
-                <i class="pi pi-heart"></i>
-              </button>
-              {{ post.likeCount }}
-            </div>
+              class="btn btn-sm btn-link text-decoration-none text-muted p-0 d-flex justify-content-center align-items-center"
+            >
+              <i class="pi pi-heart"></i>
+            </button>
+            {{ post.likeCount }}
+          </div>
           }
           <div class="d-flex align-items-center gap-1">
             <button
@@ -79,44 +79,54 @@
 
       <!-- write comment -->
       @if (accountService.currentUser()) {
-        <div>
-          <div class="author d-flex gap-2 align-items-center my-3">
-              <img
-                *ngIf="accountService.currentUser().avatar"
-                [src]="accountService.currentUser().avatar"
-              />
-              <div *ngIf="!accountService.currentUser().avatar" class="avatar-circle-sm">
-                <p-avatar icon="pi pi-user" shape="circle" />
-              </div> 
-              <span class="fw-bold">{{ accountService.currentUser().fullName }}</span>
+      <div>
+        <div class="author d-flex gap-2 align-items-center my-3">
+          <img
+            *ngIf="accountService.currentUser().avatar"
+            [src]="accountService.currentUser().avatar"
+          />
+          <div
+            *ngIf="!accountService.currentUser().avatar"
+            class="avatar-circle-sm"
+          >
+            <p-avatar icon="pi pi-user" shape="circle" />
           </div>
-
-          <!-- use ngModel directive instead of model -->
-          <form class="d-flex flex-column" 
-            (ngSubmit)="addComment(post.id, commentForm)" 
-            #commentForm="ngForm">
-              <textarea
-                ngModel
-                name="content" 
-                id="create-comment" 
-                pInputTextarea 
-                placeholder="What are your thoughts?" 
-                [autoResize]="true"
-                required>
-              </textarea>
-              <button
-                class="btn btn-sm btn-dark align-self-end rounded-pill m-2" 
-                style="width: 10%;"
-                type="submit"
-                [disabled]="commentForm.invalid"
-              >Respond</button>
-          </form>
-          
+          <span class="fw-bold">{{
+            accountService.currentUser().fullName
+          }}</span>
         </div>
-       }
-      
+
+        <!-- use ngModel directive instead of model -->
+        <form
+          class="d-flex flex-column"
+          (ngSubmit)="addComment(post.id, commentForm)"
+          #commentForm="ngForm"
+        >
+          <textarea
+            ngModel
+            name="content"
+            id="create-comment"
+            pInputTextarea
+            placeholder="What are your thoughts?"
+            [autoResize]="true"
+            required
+          >
+          </textarea>
+          <button
+            class="btn btn-sm btn-dark align-self-end rounded-pill m-2"
+            style="width: 10%"
+            type="submit"
+            [disabled]="commentForm.invalid"
+          >
+            Respond
+          </button>
+        </form>
+      </div>
+      }
+
       <div *ngIf="post.commentCount > 0" class="comments-section">
-        <div *ngFor="let comment of post.postComments" class="comment-item">
+        @for (comment of post.postComments; track comment.id) {
+        <div class="comment-item">
           <div class="d-flex justify-content-between align-items-start mb-2">
             <div class="d-flex align-items-center">
               <div class="me-2 author">
@@ -144,47 +154,105 @@
           <div class="d-flex align-items-center mb-2 gap-2">
             <!-- comment like -->
             <div class="d-flex align-items-center gap-1">
-              @if (comment.isLikedByCurrentUser) {
-                <button
-                  (click)="unlikeComment(comment.id); $event.stopPropagation()"
-                  class="btn btn-sm btn-link text-decoration-none text-muted p-0 d-flex justify-content-center align-items-center"
-                >
-                <i class="pi pi-heart-fill" style="color: #ff3040"></i>
-                </button>
+              <button
+                (click)="
+                  comment.isLikedByCurrentUser
+                    ? unlikeComment(comment)
+                    : likeComment(comment)
+                "
+                class="btn btn-sm btn-link text-decoration-none text-muted p-0 d-flex align-items-center"
+              >
+                <i
+                  class="pi"
+                  [ngClass]="
+                    comment.isLikedByCurrentUser ? 'pi-heart-fill' : 'pi-heart'
+                  "
+                  [style.color]="comment.isLikedByCurrentUser ? '#ff3040' : ''"
+                ></i>
+              </button>
               {{ comment.likeCount }}
-                } @else {
-                <button
-                  (click)="likeComment(comment.id); $event.stopPropagation()"
-                  class="btn btn-sm btn-link text-decoration-none text-muted p-0 d-flex justify-content-center align-items-center"
-                >
-                <i class="pi pi-heart"></i>
-                </button>
-              {{ comment.likeCount }}
-                }
             </div>
 
             <!-- reply comments -->
             <div class="d-flex align-items-center gap-1">
               <button
                 class="btn btn-sm btn-link text-decoration-none text-muted p-0 d-flex justify-content-center align-items-center"
+                (click)="loadReplyComments(comment)"
               >
-              @if(comment.replyCommentCount === 1) {
-                  <i class="pi pi-comments"></i
-                    >{{ comment.replyCommentCount }} reply
-                } @else if(comment.ReplyCommentCount > 1) {
-                  <i class="pi pi-comments"></i
-                    >{{ comment.replyCommentCount }} replies
-                
-                }
+                @if(comment.replyCommentCount === 1) {
+                <i class="pi pi-comments"></i
+                >{{ comment.replyCommentCount }} reply } 
+                @else if(comment.replyCommentCount > 1) {
+                <i class="pi pi-comments"></i
+                >{{ comment.replyCommentCount }} replies }
               </button>
             </div>
             <button
               class="btn btn-sm btn-link text-decoration-none text-muted p-0"
+              (click)="initReplyForm(comment.id)"
             >
               <small>Reply</small>
             </button>
           </div>
+
+          <!-- display reply comments -->
+          <div
+            *ngIf="comment.replyComments?.length > 0"
+            class="reply-comment ps-4"
+          >
+            <!-- @for (comment of replyComments[comment.id]; track $index) { -->
+            @for (reply of comment.replyComments; track reply.id) {
+            <div class="comment-item py-2">
+              <div
+                class="d-flex justify-content-between align-items-start mb-1"
+              >
+                <div class="d-flex align-items-center">
+                  <div class="me-2 author">
+                    <img
+                      *ngIf="reply.author.avatar"
+                      [src]="reply.author.avatar"
+                    />
+                    <div *ngIf="!reply.author.avatar" class="avatar-circle-sm">
+                      <p-avatar icon="pi pi-user" shape="circle" />
+                    </div>
+                  </div>
+                  <div class="d-flex flex-column ms-2">
+                    <div>
+                      <strong>{{ reply.author.fullname }}</strong>
+                    </div>
+                    <div>
+                      <p class="text-muted">
+                        {{ reply.createAt | date : "mediumDate" }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p class="card-text small">{{ reply.content }}</p>
+              <div class="d-flex align-items-center gap-1">
+                <button
+                  (click)="
+                    reply.isLikedByCurrentUser
+                      ? unlikeComment(reply)
+                      : likeComment(reply)
+                  "
+                  class="btn btn-sm btn-link text-decoration-none text-muted p-0 d-flex align-items-center"
+                >
+                  <i
+                    class="pi"
+                    [ngClass]="
+                      reply.isLikedByCurrentUser ? 'pi-heart-fill' : 'pi-heart'
+                    "
+                    [style.color]="reply.isLikedByCurrentUser ? '#ff3040' : ''"
+                  ></i>
+                </button>
+                {{ reply.likeCount }}
+              </div>
+            </div>
+            }
+          </div>
         </div>
+        }
       </div>
     </div>
   </div>

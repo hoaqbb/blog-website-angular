@@ -1,7 +1,12 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { QuillViewHTMLComponent } from 'ngx-quill';
-import { FormsModule, NgForm } from '@angular/forms';
+import {
+  FormBuilder,
+  FormsModule,
+  NgForm,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { PostService } from '../../../core/services/post.service';
 import { replaceNbspWithSpace } from '../../../shared/helpers/post.helper';
 import { ActivatedRoute } from '@angular/router';
@@ -11,6 +16,7 @@ import { LikeService } from '../../../core/services/like.service';
 import { ToastrService } from 'ngx-toastr';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { AccountService } from '../../../core/services/account.service';
+import { Comment } from '../../../shared/models/comment';
 
 @Component({
   selector: 'app-post-details',
@@ -22,6 +28,7 @@ import { AccountService } from '../../../core/services/account.service';
     QuillViewHTMLComponent,
     AvatarModule,
     InputTextareaModule,
+    ReactiveFormsModule,
   ],
   templateUrl: './post-details.component.html',
   styleUrl: './post-details.component.css',
@@ -35,7 +42,8 @@ export class PostDetailsComponent implements OnInit {
     private likeService: LikeService,
     public accountService: AccountService,
     private toastr: ToastrService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
@@ -44,9 +52,9 @@ export class PostDetailsComponent implements OnInit {
       this.postService
         .getPostBySlug(this.slug)
         .subscribe((res: PostDetails) => {
-        this.post = res;
-        this.post.content = replaceNbspWithSpace(this.post.content);
-      });
+          this.post = res;
+          this.post.content = replaceNbspWithSpace(this.post.content);
+        });
     });
   }
 
@@ -74,11 +82,10 @@ export class PostDetailsComponent implements OnInit {
     });
   }
 
-  likeComment(commentId) {
-    this.likeService.likeComment(commentId).subscribe({
+  likeComment(comment: Comment) {
+    this.likeService.likeComment(comment.id).subscribe({
       next: () => {
         // Update comment like count and isLikedByCurrentUser
-        let comment = this.post.postComments.find((x) => x.id == commentId);
         comment.isLikedByCurrentUser = true;
         comment.likeCount++;
       },
@@ -88,11 +95,10 @@ export class PostDetailsComponent implements OnInit {
     });
   }
 
-  unlikeComment(commentId) {
-    this.likeService.unlikeComment(commentId).subscribe({
+  unlikeComment(comment: Comment) {
+    this.likeService.unlikeComment(comment.id).subscribe({
       next: () => {
         // Update comment like count and isLikedByCurrentUser
-        let comment = this.post.postComments.find((x) => x.id == commentId);
         comment.isLikedByCurrentUser = false;
         comment.likeCount--;
       },
@@ -116,7 +122,18 @@ export class PostDetailsComponent implements OnInit {
         err.errors.forEach((err) => {
           this.toastr.error(err);
         });
-        },
+      },
     });
-    }
+  }
+
+  loadReplyComments(comment: Comment) {
+    this.postService.getReplyComments(comment.id).subscribe({
+      next: (res: any) => {
+        comment.replyComments = res;
+      },
+      error: (err) => {
+        this.toastr.error('Failed to load reply comments.');
+      },
+    });
+  }
 }
