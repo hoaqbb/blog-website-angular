@@ -78,4 +78,8 @@ export class PostService {
   getReplyComments(commentId) {
     return this.http.get(this.baseUrl + '/api/Comments/' + commentId + '/replies');
   }
+
+  replyComment(postId, commentId, content) {
+    return this.http.post(this.baseUrl + '/api/Comments/' + commentId + '/reply', { postId: postId, content: content });
+  }
 }

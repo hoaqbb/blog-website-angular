@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { QuillViewHTMLComponent } from 'ngx-quill';
 import {
   FormBuilder,
+  FormGroup,
   FormsModule,
   NgForm,
   ReactiveFormsModule,
@@ -36,6 +37,8 @@ import { Comment } from '../../../shared/models/comment';
 export class PostDetailsComponent implements OnInit {
   post: PostDetails;
   slug: string | null = null;
+  replyForms: { [commentId: number]: FormGroup } = {};
+  activeReplyCommentId: number | null = null;
 
   constructor(
     private postService: PostService,
@@ -135,5 +138,41 @@ export class PostDetailsComponent implements OnInit {
         this.toastr.error('Failed to load reply comments.');
       },
     });
+  }
+
+  initReplyForm(commentId: number) {
+    if (!this.replyForms[commentId]) {
+      this.replyForms[commentId] = this.fb.group({
+        content: [''],
+      });
+    }
+    this.activeReplyCommentId = commentId;
+  }
+
+  replyComment(commentId: number) {
+    const form = this.replyForms[commentId];
+    if (form.valid) {
+      const content = form.value.content;
+      this.postService
+        .replyComment(this.post.id, commentId, content)
+        .subscribe({
+          next: (res: any) => {
+            let comment = this.post.postComments.find((c) => c.id == commentId);
+            if (comment) {
+              comment.replyComments.unshift(res);
+              this.post.commentCount++;
+              form.reset();
+              this.activeReplyCommentId = null;
+            }
+          },
+          error: (err) => {
+            this.toastr.error("Falied to reply comment!");
+          },
+        });
+    }
+  }
+
+  cancelReply() {
+    this.activeReplyCommentId = null;
   }
 }

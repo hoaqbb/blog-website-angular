@@ -138,14 +138,14 @@
                   <p-avatar icon="pi pi-user" shape="circle" />
                 </div>
               </div>
-              <div class="d-flex flex-column ms-2">
+              <div class="d-flex flex-column ms-2 py-2">
                 <div>
                   <strong>{{ comment.author.fullname }}</strong>
                 </div>
                 <div>
-                  <p class="text-muted">
+                  <div class="text-muted">
                     {{ comment.createAt | date : "mediumDate" }}
-                  </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -195,12 +195,45 @@
             </button>
           </div>
 
+          <!-- Hiển thị form nếu đã toggle -->
+           <div class="reply-comment ps-4">
+            <form 
+              class="d-flex flex-column"
+              *ngIf="activeReplyCommentId === comment.id"
+              [formGroup]="replyForms[comment.id]"
+            >
+              <textarea
+                formControlName="content"
+                id="create-comment" 
+                pInputTextarea 
+                placeholder="What are your thoughts?" 
+                [autoResize]="true"
+                required>
+              </textarea>
+              <div class="d-flex align-self-end">
+                <button
+                  class="btn btn-sm btn-dark rounded-pill m-2" 
+                  (click)="cancelReply()"
+                  >
+                  Cancle
+                </button>
+                <button
+                  class="btn btn-sm btn-dark rounded-pill m-2" 
+                  (click)="replyComment(comment.id)"
+                  type="submit"
+                  [disabled]="replyForms[comment.id].invalid"
+                  >
+                  Respond
+                </button>
+              </div>
+            </form>
+          </div>
+
           <!-- display reply comments -->
           <div
             *ngIf="comment.replyComments?.length > 0"
             class="reply-comment ps-4"
           >
-            <!-- @for (comment of replyComments[comment.id]; track $index) { -->
             @for (reply of comment.replyComments; track reply.id) {
             <div class="comment-item py-2">
               <div
